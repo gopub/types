@@ -99,18 +99,41 @@ func (n *PhoneNumber) Value() (driver.Value, error) {
 }
 
 func NewPhoneNumber(s string) (*PhoneNumber, error) {
-	parsedNumber, err := phonenumbers.Parse(s, "")
+	s = trimPhoneNumberString(s)
+	pn, err := phonenumbers.Parse(s, "")
 	if err != nil {
 		return nil, err
 	}
 
-	if !phonenumbers.IsValidNumber(parsedNumber) {
+	if !phonenumbers.IsValidNumber(pn) {
 		return nil, errors.New("invalid phone number")
 	}
 
 	return &PhoneNumber{
-		Code:      int(parsedNumber.GetCountryCode()),
-		Number:    int64(parsedNumber.GetNationalNumber()),
-		Extension: parsedNumber.GetExtension(),
+		Code:      int(pn.GetCountryCode()),
+		Number:    int64(pn.GetNationalNumber()),
+		Extension: pn.GetExtension(),
 	}, nil
+}
+
+func NewPhoneNumberV2(s string, code int) (*PhoneNumber, error) {
+	s = trimPhoneNumberString(s)
+	pn, err := NewPhoneNumber(s)
+	if err == nil {
+		return pn, nil
+	}
+	if s[0] != '+' && code != 0 {
+		s = fmt.Sprintf("+%d%s", code, s)
+		return NewPhoneNumber(s)
+
+	}
+	return nil, err
+}
+
+func trimPhoneNumberString(s string) string {
+	s = strings.Replace(s, "-", "", -1)
+	s = strings.Replace(s, " ", "", -1)
+	s = strings.Replace(s, "(", "", -1)
+	s = strings.Replace(s, ")", "", -1)
+	return s
 }
