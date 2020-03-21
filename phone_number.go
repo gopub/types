@@ -4,9 +4,10 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/gopub/conv"
 	"github.com/gopub/gox/sql"
-	"strings"
 
 	"github.com/nyaruka/phonenumbers"
 )
