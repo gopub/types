@@ -1,7 +1,10 @@
 package types
 
 import (
+	"database/sql"
+	"database/sql/driver"
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"net/url"
 	"reflect"
@@ -17,10 +20,13 @@ import (
 
 var emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
+var _ driver.Valuer = (M)(nil)
+var _ sql.Scanner = (*M)(nil)
+
 // M is a special map which provides convenient methods
 type M map[string]interface{}
 
-func (m M) Values(key string) []interface{} {
+func (m M) Slice(key string) []interface{} {
 	value := m[key]
 	if value == nil {
 		return []interface{}{}
@@ -40,7 +46,7 @@ func (m M) Values(key string) []interface{} {
 	}
 }
 
-func (m M) Value(key string) interface{} {
+func (m M) Get(key string) interface{} {
 	value := m[key]
 	if value == nil {
 		return nil
@@ -59,11 +65,11 @@ func (m M) Value(key string) interface{} {
 }
 
 func (m M) Contains(key string) bool {
-	return m.Value(key) != nil
+	return m.Get(key) != nil
 }
 
 func (m M) ContainsString(key string) bool {
-	switch m.Value(key).(type) {
+	switch m.Get(key).(type) {
 	case string:
 		return true
 	default:
@@ -72,7 +78,7 @@ func (m M) ContainsString(key string) bool {
 }
 
 func (m M) String(key string) string {
-	switch v := m.Value(key).(type) {
+	switch v := m.Get(key).(type) {
 	case string:
 		return v
 	case json.Number:
@@ -83,7 +89,7 @@ func (m M) String(key string) string {
 }
 
 func (m M) TrimmedString(key string) string {
-	switch v := m.Value(key).(type) {
+	switch v := m.Get(key).(type) {
 	case string:
 		return strings.TrimSpace(v)
 	case json.Number:
@@ -94,7 +100,7 @@ func (m M) TrimmedString(key string) string {
 }
 
 func (m M) DefaultString(key string, defaultValue string) string {
-	switch v := m.Value(key).(type) {
+	switch v := m.Get(key).(type) {
 	case string:
 		return v
 	default:
@@ -103,7 +109,7 @@ func (m M) DefaultString(key string, defaultValue string) string {
 }
 
 func (m M) MustString(key string) string {
-	switch v := m.Value(key).(type) {
+	switch v := m.Get(key).(type) {
 	case string:
 		return v
 	default:
@@ -111,14 +117,14 @@ func (m M) MustString(key string) string {
 	}
 }
 
-func (m M) Strings(key string) []string {
+func (m M) StringSlice(key string) []string {
 	_, found := m[key]
 	if !found {
 		return nil
 	}
 
-	values := m.Values(key)
-	result := []string{}
+	values := m.Slice(key)
+	var result []string
 	for _, v := range values {
 		if str, ok := v.(string); ok {
 			result = append(result, str)
@@ -129,80 +135,80 @@ func (m M) Strings(key string) []string {
 }
 
 func (m M) ContainsBool(key string) bool {
-	_, err := conv.ToBool(m.Value(key))
+	_, err := conv.ToBool(m.Get(key))
 	return err == nil
 }
 
 func (m M) Bool(key string) bool {
-	v, _ := conv.ToBool(m.Value(key))
+	v, _ := conv.ToBool(m.Get(key))
 	return v
 }
 
 func (m M) DefaultBool(key string, defaultValue bool) bool {
-	if v, err := conv.ToBool(m.Value(key)); err == nil {
+	if v, err := conv.ToBool(m.Get(key)); err == nil {
 		return v
 	}
 	return defaultValue
 }
 
 func (m M) MustBool(key string) bool {
-	if v, err := conv.ToBool(m.Value(key)); err == nil {
+	if v, err := conv.ToBool(m.Get(key)); err == nil {
 		return v
 	}
 	panic("No bool value for key:" + key)
 }
 
 func (m M) Int(key string) int {
-	v, _ := conv.ToInt64(m.Value(key))
+	v, _ := conv.ToInt64(m.Get(key))
 	return int(v)
 }
 
 func (m M) DefaultInt(key string, defaultVal int) int {
-	if v, err := conv.ToInt64(m.Value(key)); err == nil {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
 		return int(v)
 	}
 	return defaultVal
 }
 
 func (m M) MustInt(key string) int {
-	if v, err := conv.ToInt64(m.Value(key)); err == nil {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
 		return int(v)
 	}
 	panic("No int value for key:" + key)
 }
 
 func (m M) IntSlice(key string) []int {
-	l, _ := conv.ToIntSlice(m.Values(key))
+	l, _ := conv.ToIntSlice(m.Slice(key))
 	return l
 }
 
 func (m M) ContainsInt64(key string) bool {
-	_, err := conv.ToInt64(m.Value(key))
+	_, err := conv.ToInt64(m.Get(key))
 	return err == nil
 }
 
 func (m M) Int64(key string) int64 {
-	v, _ := conv.ToInt64(m.Value(key))
+	v, _ := conv.ToInt64(m.Get(key))
 	return v
 }
 
 func (m M) DefaultInt64(key string, defaultVal int64) int64 {
-	if v, err := conv.ToInt64(m.Value(key)); err == nil {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
 		return v
 	}
 	return defaultVal
 }
 
 func (m M) MustInt64(key string) int64 {
-	if v, err := conv.ToInt64(m.Value(key)); err == nil {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
 		return v
 	}
 	panic("No int64 value for key:" + key)
 }
 
-func (m M) Int64s(key string) []int64 {
-	values := m.Values(key)
-	result := []int64{}
+func (m M) Int64Slice(key string) []int64 {
+	values := m.Slice(key)
+	var result []int64
 	for _, v := range values {
 		i, e := conv.ToInt64(v)
 		if e == nil {
@@ -214,32 +220,32 @@ func (m M) Int64s(key string) []int64 {
 }
 
 func (m M) ContainsFloat64(key string) bool {
-	_, err := conv.ToFloat64(m.Value(key))
+	_, err := conv.ToFloat64(m.Get(key))
 	return err == nil
 }
 
 func (m M) Float64(key string) float64 {
-	v, _ := conv.ToFloat64(m.Value(key))
+	v, _ := conv.ToFloat64(m.Get(key))
 	return v
 }
 
 func (m M) DefaultFloat64(key string, defaultValue float64) float64 {
-	if v, err := conv.ToFloat64(m.Value(key)); err == nil {
+	if v, err := conv.ToFloat64(m.Get(key)); err == nil {
 		return v
 	}
 	return defaultValue
 }
 
 func (m M) MustFloat64(key string) float64 {
-	if v, err := conv.ToFloat64(m.Value(key)); err == nil {
+	if v, err := conv.ToFloat64(m.Get(key)); err == nil {
 		return v
 	}
 	panic("No float64 value for key:" + key)
 }
 
-func (m M) Float64s(key string) []float64 {
-	values := m.Values(key)
-	result := []float64{}
+func (m M) Float64Slice(key string) []float64 {
+	values := m.Slice(key)
+	var result []float64
 	for _, val := range values {
 		i, e := conv.ToFloat64(val)
 		if e == nil {
@@ -341,11 +347,11 @@ func (m M) MustDecimal(key string) decimal.Decimal {
 }
 
 func (m M) Map(key string) M {
-	switch val := m.Value(key).(type) {
+	switch v := m.Get(key).(type) {
 	case M:
-		return val
+		return v
 	case map[string]interface{}:
-		return M(val)
+		return v
 	default:
 		return M{}
 	}
@@ -355,10 +361,10 @@ func (m M) Date(key string) (time.Time, bool) {
 	return m.DateInLocation(key, time.UTC)
 }
 
-func (m M) DateInLocation(key string, location *time.Location) (time.Time, bool) {
+func (m M) DateInLocation(key string, loc *time.Location) (time.Time, bool) {
 	str := strings.TrimSpace(m.String(key))
 	if len(str) > 0 {
-		birthday, err := time.ParseInLocation("2006-01-02", str, location)
+		birthday, err := time.ParseInLocation("2006-01-02", str, loc)
 		return birthday, err == nil
 	}
 
@@ -412,57 +418,23 @@ func (m M) URL(key string) string {
 	return s
 }
 
-func (m M) set(k string, v interface{}) {
-	val := reflect.ValueOf(v)
-	if !val.IsValid() {
+func (m M) SetNX(k string, v interface{}) {
+	if v == nil {
 		return
 	}
-	if val.IsZero() {
-		if _, ok := m[k]; ok {
-			return
-		}
+	if _, ok := m[k]; ok {
+		return
 	}
 	m[k] = v
 }
 
 func (m M) AddMap(val M) {
 	for k, v := range val {
-		m.set(k, v)
+		m.SetNX(k, v)
 	}
 }
 
-func (m M) AddMapObj(obj interface{}) {
-	v := reflect.ValueOf(obj)
-	if !v.IsValid() {
-		return
-	}
-
-	for v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-
-	if v.Kind() != reflect.Map {
-		return
-	}
-
-	length := len(v.MapKeys())
-	if length == 0 {
-		return
-	}
-
-	if v.MapKeys()[0].Kind() != reflect.String {
-		panic("not map[string]interface{}")
-	}
-
-	for _, key := range v.MapKeys() {
-		val := v.MapIndex(key).Interface()
-		if val != nil {
-			m.set(key.String(), val)
-		}
-	}
-}
-
-func (m M) JSON() string {
+func (m M) JSONString() string {
 	data, err := json.Marshal(m)
 	if err != nil {
 		return ""
@@ -470,47 +442,7 @@ func (m M) JSON() string {
 	return string(data)
 }
 
-func (m M) RemoveEmptyValues() {
-	m.RemoveSomeEmptyValues(nil)
-}
-
-func (m M) RemoveSomeEmptyValues(keys []string) {
-	for k, v := range m {
-		if len(keys) > 0 && indexOfStr(keys, k) < 0 {
-			continue
-		}
-		val := reflect.ValueOf(v)
-		rm := false
-		switch val.Kind() {
-		case reflect.Invalid:
-			rm = true
-		case reflect.String:
-			rm = val.Len() == 0
-		case reflect.Ptr:
-			rm = val.IsNil()
-		case reflect.Slice, reflect.Array, reflect.Chan:
-			rm = val.IsNil() || val.Len() == 0
-		case reflect.Map:
-			if m1, ok1 := v.(map[string]interface{}); ok1 {
-				M(m1).RemoveSomeEmptyValues(keys)
-			} else if m2, ok2 := v.(M); ok2 {
-				m2.RemoveEmptyValues()
-			}
-
-			if val.IsNil() {
-				rm = true
-			} else if val.Len() == 0 {
-				rm = true
-			}
-		}
-
-		if rm {
-			delete(m, k)
-		}
-	}
-}
-
-func (m M) RemoveKeys(keys []string) {
+func (m M) Remove(keys ...string) {
 	for k := range m {
 		if indexOfStr(keys, k) < 0 {
 			delete(m, k)
@@ -518,7 +450,7 @@ func (m M) RemoveKeys(keys []string) {
 	}
 }
 
-func (m M) RemoveAllExceptKeys(keys []string) {
+func (m M) Keep(keys ...string) {
 	for k := range m {
 		if indexOfStr(keys, k) < 0 {
 			delete(m, k)
@@ -526,8 +458,33 @@ func (m M) RemoveAllExceptKeys(keys []string) {
 	}
 }
 
-func indexOfStr(strs []string, s string) int {
-	for i, str := range strs {
+func (m *M) Scan(src interface{}) error {
+	if src == nil {
+		return nil
+	}
+
+	b, err := conv.ToBytes(src)
+	if err != nil {
+		return fmt.Errorf("parse bytes: %w", err)
+	}
+
+	if len(b) == 0 {
+		return nil
+	}
+
+	err = json.Unmarshal(b, m)
+	if err != nil {
+		return fmt.Errorf("unmarshal: %w", err)
+	}
+	return nil
+}
+
+func (m M) Value() (driver.Value, error) {
+	return json.Marshal(m)
+}
+
+func indexOfStr(l []string, s string) int {
+	for i, str := range l {
 		if s == str {
 			return i
 		}
