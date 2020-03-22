@@ -79,7 +79,7 @@ func NewAny(v interface{}) *Any {
 	return a
 }
 
-func (a *Any) GetValue() interface{} {
+func (a *Any) Value() interface{} {
 	return a.val
 }
 
