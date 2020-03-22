@@ -1,10 +1,7 @@
 package types
 
 import (
-	"database/sql"
-	"database/sql/driver"
 	"encoding/json"
-	"fmt"
 	"math/big"
 	"net/url"
 	"reflect"
@@ -19,9 +16,6 @@ import (
 )
 
 var emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
-var _ driver.Valuer = (M)(nil)
-var _ sql.Scanner = (*M)(nil)
 
 // M is a special map which provides convenient methods
 type M map[string]interface{}
@@ -456,31 +450,6 @@ func (m M) Keep(keys ...string) {
 			delete(m, k)
 		}
 	}
-}
-
-func (m *M) Scan(src interface{}) error {
-	if src == nil {
-		return nil
-	}
-
-	b, err := conv.ToBytes(src)
-	if err != nil {
-		return fmt.Errorf("parse bytes: %w", err)
-	}
-
-	if len(b) == 0 {
-		return nil
-	}
-
-	err = json.Unmarshal(b, m)
-	if err != nil {
-		return fmt.Errorf("unmarshal: %w", err)
-	}
-	return nil
-}
-
-func (m M) Value() (driver.Value, error) {
-	return json.Marshal(m)
 }
 
 func indexOfStr(l []string, s string) int {

@@ -1,19 +1,12 @@
 package types
 
 import (
-	"database/sql"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/gopub/conv"
-	"github.com/gopub/sql/pg"
 	"github.com/nyaruka/phonenumbers"
 )
-
-var _ driver.Valuer = (*PhoneNumber)(nil)
-var _ sql.Scanner = (*PhoneNumber)(nil)
 
 type PhoneNumber struct {
 	Code      int    `json:"code"`
@@ -52,49 +45,6 @@ func (n *PhoneNumber) MaskString() string {
 	}
 
 	return fmt.Sprintf("+%d%s-%s", n.Code, nn, n.Extension)
-}
-
-func (n *PhoneNumber) Scan(src interface{}) error {
-	if src == nil {
-		return nil
-	}
-
-	s, err := conv.ToString(src)
-	if err != nil {
-		return fmt.Errorf("parse string: %w", err)
-	}
-	if len(s) == 0 {
-		return nil
-	}
-
-	fields, err := pg.ParseCompositeFields(s)
-	if err != nil {
-		return fmt.Errorf("parse composite fields %s: %w", s, err)
-	}
-
-	if len(fields) != 3 {
-		return fmt.Errorf("parse composite fields %s: got %v", s, fields)
-	}
-
-	n.Code, err = conv.ToInt(fields[0])
-	if err != nil {
-		return fmt.Errorf("parse code %s: %w", fields[0], err)
-	}
-	n.Number, err = conv.ToInt64(fields[1])
-	if err != nil {
-		return fmt.Errorf("parse code %s: %w", fields[1], err)
-	}
-	n.Extension = fields[2]
-	return nil
-}
-
-func (n *PhoneNumber) Value() (driver.Value, error) {
-	if n == nil {
-		return nil, nil
-	}
-	ext := strings.Replace(n.Extension, ",", "\\,", -1)
-	s := fmt.Sprintf("(%d,%d,%s)", n.Code, n.Number, ext)
-	return s, nil
 }
 
 func NewPhoneNumber(s string) (*PhoneNumber, error) {

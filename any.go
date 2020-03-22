@@ -1,7 +1,6 @@
 package types
 
 import (
-	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -187,29 +186,4 @@ func (a *Any) MarshalJSON() ([]byte, error) {
 
 func (a *Any) TypeName() string {
 	return getAnyTypeName(a.val)
-}
-
-func (a *Any) Scan(src interface{}) error {
-	if src == nil {
-		return nil
-	}
-
-	b, err := conv.ToBytes(src)
-	if err != nil {
-		return fmt.Errorf("parse bytes: %w", err)
-	}
-
-	if len(b) == 0 {
-		return nil
-	}
-
-	err = json.Unmarshal(b, a)
-	if err != nil {
-		return fmt.Errorf("unmarshal: %w", err)
-	}
-	return nil
-}
-
-func (a *Any) Value() (driver.Value, error) {
-	return json.Marshal(a)
 }
