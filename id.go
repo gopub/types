@@ -1,7 +1,10 @@
 package types
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -85,6 +88,11 @@ func NewIDFromString(s string, f IDFormat) (ID, error) {
 	default:
 		return 0, errors.New("invalid format")
 	}
+}
+
+func (i ID) Salt(v string) string {
+	sum := md5.Sum([]byte(fmt.Sprintf("%s%d", v, i)))
+	return hex.EncodeToString(sum[:])
 }
 
 func parseShortID(s string) (ID, error) {
