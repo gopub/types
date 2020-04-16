@@ -15,6 +15,10 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+var dateFormats = []string{
+	"2006-1-2", "20060102", "2006/1/2", "2/1/2006",
+}
+
 // M is a special map which provides convenient methods
 type M map[string]interface{}
 
@@ -349,18 +353,20 @@ func (m M) Map(key string) M {
 	}
 }
 
-func (m M) Date(key string) (time.Time, bool) {
+func (m M) Date(key string) (*time.Time, bool) {
 	return m.DateInLocation(key, time.UTC)
 }
 
-func (m M) DateInLocation(key string, loc *time.Location) (time.Time, bool) {
-	str := strings.TrimSpace(m.String(key))
-	if len(str) > 0 {
-		birthday, err := time.ParseInLocation("2006-01-02", str, loc)
-		return birthday, err == nil
+func (m M) DateInLocation(key string, loc *time.Location) (*time.Time, bool) {
+	s := strings.TrimSpace(m.String(key))
+	if s == "" {
+		return nil, false
 	}
-
-	return time.Time{}, false
+	d, err := conv.ToDateInLocation(s, loc)
+	if err != nil {
+		return nil, false
+	}
+	return d, true
 }
 
 func (m M) PhoneNumber(key string) *PhoneNumber {
