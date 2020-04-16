@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/gopub/log"
 	"strings"
 
 	"github.com/nyaruka/phonenumbers"
@@ -85,4 +86,16 @@ func trimPhoneNumberString(s string) string {
 	s = strings.Replace(s, "(", "", -1)
 	s = strings.Replace(s, ")", "", -1)
 	return s
+}
+
+func IsPhoneNumber(s string) bool {
+	if s == "" {
+		return false
+	}
+	n, err := phonenumbers.Parse(s, "")
+	if err != nil {
+		log.Errorf("Parse %s: %v", s, err)
+		return false
+	}
+	return phonenumbers.IsValidNumber(n)
 }
