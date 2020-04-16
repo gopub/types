@@ -40,8 +40,10 @@ type Int64Set struct {
 	items map[int64]Void
 }
 
-var _ json.Unmarshaler = (*Int64Set)(nil)
-var _ json.Marshaler = (*Int64Set)(nil)
+var (
+	_ json.Unmarshaler = (*Int64Set)(nil)
+	_ json.Marshaler   = (*Int64Set)(nil)
+)
 
 func NewInt64Set(capacity int) *Int64Set {
 	s := &Int64Set{}
@@ -98,8 +100,10 @@ type StringSet struct {
 	items map[string]Void
 }
 
-var _ json.Unmarshaler = (*StringSet)(nil)
-var _ json.Marshaler = (*StringSet)(nil)
+var (
+	_ json.Unmarshaler = (*StringSet)(nil)
+	_ json.Marshaler   = (*StringSet)(nil)
+)
 
 func NewStringSet(capacity int) *StringSet {
 	s := &StringSet{}

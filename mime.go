@@ -9,7 +9,7 @@ func init() {
 }
 
 type Image struct {
-	Link      string `json:"link"`
+	URL       string `json:"url"`
 	Width     int    `json:"w,omitempty"`
 	Height    int    `json:"h,omitempty"`
 	Format    string `json:"fmt,omitempty"`
@@ -20,7 +20,7 @@ type Image struct {
 }
 
 type Video struct {
-	Link     string `json:"link"`
+	URL      string `json:"url"`
 	Format   string `json:"fmt,omitempty"`
 	Duration int    `json:"duration,omitempty"`
 	Size     int    `json:"size,omitempty"`
@@ -30,7 +30,7 @@ type Video struct {
 }
 
 type Audio struct {
-	Link     string `json:"link"`
+	URL      string `json:"url"`
 	Format   string `json:"fmt,omitempty"`
 	Duration int    `json:"duration,omitempty"`
 	Size     int    `json:"size,omitempty"`
@@ -39,7 +39,7 @@ type Audio struct {
 }
 
 type File struct {
-	Link   string `json:"link"`
+	URL    string `json:"url"`
 	Name   string `json:"name"`
 	Size   int    `json:"size,omitempty"`
 	Format string `json:"fmt,omitempty"`
@@ -50,5 +50,5 @@ type WebPage struct {
 	Title   string `json:"title,omitempty"`
 	Summary string `json:"summary,omitempty"`
 	Image   *Image `json:"image,omitempty"`
-	Link    string `json:"link"`
+	URL     string `json:"url"`
 }

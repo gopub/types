@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PI          = 3.14159265
+	PI          = 3.141_592_65
 	EarthRadius = 6_378_100
 	EarthCircle = 2 * PI * EarthRadius
 	Degree      = EarthCircle * 1000 / 360

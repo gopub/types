@@ -6,7 +6,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// Money
 type Money struct {
 	Currency string          `json:"currency"`
 	Amount   decimal.Decimal `json:"amount"`
