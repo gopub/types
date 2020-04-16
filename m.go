@@ -15,10 +15,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-var dateFormats = []string{
-	"2006-1-2", "20060102", "2006/1/2", "2/1/2006",
-}
-
 // M is a special map which provides convenient methods
 type M map[string]interface{}
 
@@ -410,8 +406,15 @@ func (m M) EmailAddress(key string) *mail.Address {
 func (m M) URL(key string) string {
 	s := m.String(key)
 	s = strings.TrimSpace(s)
-	_, err := url.Parse(s)
+	u, err := url.Parse(s)
 	if err != nil {
+		return ""
+	}
+	if len(u.Scheme) == 0 {
+		return ""
+	}
+
+	if len(u.Host) == 0 {
 		return ""
 	}
 	return s
