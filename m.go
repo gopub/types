@@ -3,9 +3,9 @@ package types
 import (
 	"encoding/json"
 	"math/big"
+	"net/mail"
 	"net/url"
 	"reflect"
-	"regexp"
 	"strings"
 	"time"
 
@@ -14,8 +14,6 @@ import (
 	"github.com/nyaruka/phonenumbers"
 	"github.com/shopspring/decimal"
 )
-
-var emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // M is a special map which provides convenient methods
 type M map[string]interface{}
@@ -393,13 +391,14 @@ func (m M) PhoneNumber(key string) *PhoneNumber {
 	}
 }
 
-func (m M) Email(key string) string {
+func (m M) EmailAddress(key string) *mail.Address {
 	s := m.String(key)
 	s = strings.TrimSpace(s)
-	if emailRegexp.MatchString(s) {
-		return s
+	addr, err := mail.ParseAddress(s)
+	if err != nil {
+		return nil
 	}
-	return ""
+	return addr
 }
 
 func (m M) URL(key string) string {
