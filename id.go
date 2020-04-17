@@ -160,21 +160,21 @@ type IDGenerator interface {
 	NextID() ID
 }
 
-type NumberGetter interface {
-	GetNumber() int64
+type NextNumber interface {
+	NextNumber() int64
 }
 
 type SnakeIDGenerator struct {
 	seqSize   uint
 	shardSize uint
 
-	clock    NumberGetter
-	sharding NumberGetter
+	clock    NextNumber
+	sharding NextNumber
 
 	counter Counter
 }
 
-func NewSnakeIDGenerator(shardBitsSize, seqBitsSize uint, clock, sharding NumberGetter) *SnakeIDGenerator {
+func NewSnakeIDGenerator(shardBitsSize, seqBitsSize uint, clock, sharding NextNumber) *SnakeIDGenerator {
 	if seqBitsSize < 1 || seqBitsSize > 16 {
 		panic("seqBitsSize should be [1,16]")
 	}
@@ -204,9 +204,9 @@ func NewSnakeIDGenerator(shardBitsSize, seqBitsSize uint, clock, sharding Number
 }
 
 func (g *SnakeIDGenerator) NextID() ID {
-	id := g.clock.GetNumber() << (g.seqSize + g.shardSize)
+	id := g.clock.NextNumber() << (g.seqSize + g.shardSize)
 	if g.shardSize > 0 {
-		id |= (g.sharding.GetNumber() % (1 << g.shardSize)) << g.seqSize
+		id |= (g.sharding.NextNumber() % (1 << g.shardSize)) << g.seqSize
 	}
 	id |= g.counter.Next() % (1 << g.seqSize)
 	return ID(id)
@@ -221,13 +221,13 @@ var (
 	idGenerator IDGenerator = NewSnakeIDGenerator(0, 6, nextMilliseconds, nil)
 )
 
-type numberGetterFunc func() int64
+type NextNumberFunc func() int64
 
-func (f numberGetterFunc) GetNumber() int64 {
+func (f NextNumberFunc) NextNumber() int64 {
 	return f()
 }
 
-var nextMilliseconds numberGetterFunc = func() int64 {
+var nextMilliseconds NextNumberFunc = func() int64 {
 	return time.Since(epoch).Nanoseconds() / 1e6
 }
 

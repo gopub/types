@@ -18,7 +18,7 @@ func jsonString(i interface{}) string {
 
 func nextImage() *types.Image {
 	return &types.Image{
-		Link:   "https://www.image.com/" + fmt.Sprint(time.Now().Unix()),
+		URL:    "https://www.image.com/" + fmt.Sprint(time.Now().Unix()),
 		Width:  rand.Int(),
 		Height: rand.Int(),
 		Format: "png",
@@ -27,7 +27,7 @@ func nextImage() *types.Image {
 
 func nextVideo() *types.Video {
 	return &types.Video{
-		Link:     "http://www.video.com/" + fmt.Sprint(time.Now().Unix()),
+		URL:      "http://www.video.com/" + fmt.Sprint(time.Now().Unix()),
 		Format:   "rmvb",
 		Duration: rand.Int(),
 		Size:     rand.Int(),
