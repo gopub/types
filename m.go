@@ -403,11 +403,7 @@ func (m M) URL(key string) string {
 	if err != nil {
 		return ""
 	}
-	if len(u.Scheme) == 0 {
-		return ""
-	}
-
-	if len(u.Host) == 0 {
+	if u.Scheme == "" || u.Host == "" {
 		return ""
 	}
 	return s
