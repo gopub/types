@@ -174,30 +174,30 @@ type SnakeIDGenerator struct {
 	counter Counter
 }
 
-func NewSnakeIDGenerator(shardSize, seqSize uint, clock, sharding NumberGetter) *SnakeIDGenerator {
-	if seqSize < 1 || seqSize > 16 {
-		panic("seqSize should be [1,16]")
+func NewSnakeIDGenerator(shardBitsSize, seqBitsSize uint, clock, sharding NumberGetter) *SnakeIDGenerator {
+	if seqBitsSize < 1 || seqBitsSize > 16 {
+		panic("seqBitsSize should be [1,16]")
 	}
 
 	if clock == nil {
 		panic("clock is nil")
 	}
 
-	if shardSize > 8 {
-		panic("shardSize should be [0,8]")
+	if shardBitsSize > 8 {
+		panic("shardBitsSize should be [0,8]")
 	}
 
-	if shardSize > 0 && sharding == nil {
+	if shardBitsSize > 0 && sharding == nil {
 		panic("sharding is nil")
 	}
 
-	if shardSize+seqSize >= 20 {
-		panic("shardSize + seqSize should be less than 20")
+	if shardBitsSize+seqBitsSize >= 20 {
+		panic("shardBitsSize + seqBitsSize should be less than 20")
 	}
 
 	return &SnakeIDGenerator{
-		seqSize:   seqSize,
-		shardSize: shardSize,
+		seqSize:   seqBitsSize,
+		shardSize: shardBitsSize,
 		clock:     clock,
 		sharding:  sharding,
 	}
@@ -212,20 +212,14 @@ func (g *SnakeIDGenerator) NextID() ID {
 	return ID(id)
 }
 
-// JSON中若没有指定类型，number默认解析成double，double整数部分最大值为2^53，因此控制在53bit内比较好
-// id由time+shard+seq组成
-// 若业务多可扩充shard，并发高可扩充seq. 由于time在最高位,故扩展后的id集合与原id集合不会出现交集,可保持全局唯一
-
-const DefaultShardBitSize = 0 // 单机版本
-const DefaultSeqBitSize = 6   // 每个shard每ms不能超过64次调用
-
-var epoch time.Time
-var DefaultIDGenerator IDGenerator
-
-func init() {
-	epoch = time.Date(2019, time.January, 2, 15, 4, 5, 0, time.UTC)
-	DefaultIDGenerator = NewSnakeIDGenerator(DefaultShardBitSize, DefaultSeqBitSize, nextMilliseconds, nil)
-}
+// Most language's JSON decoders decode number into double if type isn't explicitly specified.
+// The maximum integer part of double is 2^53，so it'd better to control id bits size less than 53
+// id is made of time, shard and seq
+// Putting the time at the beginning can ensure the id unique and increasing in case increase shard or seq bits size in the future
+var (
+	epoch                   = time.Date(2019, time.January, 2, 15, 4, 5, 0, time.UTC)
+	idGenerator IDGenerator = NewSnakeIDGenerator(0, 6, nextMilliseconds, nil)
+)
 
 type numberGetterFunc func() int64
 
@@ -238,5 +232,9 @@ var nextMilliseconds numberGetterFunc = func() int64 {
 }
 
 func NewID() ID {
-	return DefaultIDGenerator.NextID()
+	return idGenerator.NextID()
+}
+
+func SetIDGenerator(g IDGenerator) {
+	idGenerator = g
 }

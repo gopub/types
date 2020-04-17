@@ -3,9 +3,9 @@ package types
 import (
 	"errors"
 	"fmt"
-	"github.com/gopub/log"
 	"strings"
 
+	"github.com/gopub/log"
 	"github.com/nyaruka/phonenumbers"
 )
 
