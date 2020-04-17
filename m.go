@@ -11,7 +11,6 @@ import (
 
 	"github.com/gopub/conv"
 	"github.com/gopub/log"
-	"github.com/nyaruka/phonenumbers"
 	"github.com/shopspring/decimal"
 )
 
@@ -368,15 +367,8 @@ func (m M) DateInLocation(key string, loc *time.Location) (*time.Time, bool) {
 func (m M) PhoneNumber(key string) *PhoneNumber {
 	switch v := m[key].(type) {
 	case string:
-		pn, err := phonenumbers.Parse(strings.TrimSpace(v), "")
-		if err != nil || !phonenumbers.IsValidNumber(pn) {
-			return nil
-		}
-		return &PhoneNumber{
-			Code:      int(pn.GetCountryCode()),
-			Number:    int64(pn.GetNationalNumber()),
-			Extension: pn.GetExtension(),
-		}
+		pn, _ := NewPhoneNumber(v)
+		return pn
 	case M, map[string]interface{}:
 		data, err := json.Marshal(v)
 		if err != nil {
@@ -387,6 +379,7 @@ func (m M) PhoneNumber(key string) *PhoneNumber {
 		if err != nil {
 			log.Errorf("Unmarshal failed: %v", err)
 		}
+		pn, _ = NewPhoneNumber(pn.String())
 		return pn
 	default:
 		return nil
