@@ -18,8 +18,8 @@ func (r *TimeRange) Includes(t time.Time) bool {
 }
 
 type Float64Range struct {
-	LowerBound float64
-	UpperBound float64
+	LowerBound float64 `json:"lower_bound"`
+	UpperBound float64 `json:"upper_bound"`
 }
 
 func (r *Float64Range) Len() float64 {
@@ -31,8 +31,8 @@ func (r *Float64Range) Includes(f float64) bool {
 }
 
 type Float32Range struct {
-	LowerBound float32
-	UpperBound float32
+	LowerBound float32 `json:"lower_bound"`
+	UpperBound float32 `json:"upper_bound"`
 }
 
 func (r *Float32Range) Len() float32 {
@@ -44,8 +44,8 @@ func (r *Float32Range) Includes(f float32) bool {
 }
 
 type Int64Range struct {
-	LowerBound int64
-	UpperBound int64
+	LowerBound int64 `json:"lower_bound"`
+	UpperBound int64 `json:"upper_bound"`
 }
 
 func (r *Int64Range) Len() int64 {
@@ -57,8 +57,8 @@ func (r *Int64Range) Includes(i int64) bool {
 }
 
 type IntRange struct {
-	LowerBound int
-	UpperBound int
+	LowerBound int `json:"lower_bound"`
+	UpperBound int `json:"upper_bound"`
 }
 
 func (r *IntRange) Len() int {
