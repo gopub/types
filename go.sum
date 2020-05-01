@@ -6,6 +6,8 @@ github.com/golang/protobuf v1.3.2 h1:6nsPYzhq5kReh6QImI3k5qWzO4PEbvbIW2cwSfR/6xs
 github.com/golang/protobuf v1.3.2/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/gopub/conv v0.3.2 h1:3ZhM6QDZbr69Wn3q4qSQxZJt1aa6GCCICpiO7JFMkD4=
 github.com/gopub/conv v0.3.2/go.mod h1:OAog+Vown+go6heGhEj/5dcPE5JjHMIaus5kLvvnzxE=
+github.com/gopub/conv v0.3.4 h1:RohB/IEHI544UAcJa9ZPbd0VSSEER2gdB4n2DCAvGrg=
+github.com/gopub/conv v0.3.4/go.mod h1:fkjKAhFUBePpeF+07oJCakpDyTS6kgSMcYd2DEV6dB0=
 github.com/gopub/log v1.2.0 h1:/MN2pPHuocexZ6irULUN40vC6R6/rNIKhHllAWLfwUU=
 github.com/gopub/log v1.2.0/go.mod h1:N7GzW/a2tgyQp/wSwd9YzUN5AbVB2G1yE7+nZUGL46A=
 github.com/nyaruka/phonenumbers v1.0.54 h1:vU9IUfiHrpu+lZcCkjEzDsCIdurQV8lxjrAdqW2osAU=

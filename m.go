@@ -348,18 +348,18 @@ func (m M) Map(key string) M {
 	}
 }
 
-func (m M) Date(key string) (*time.Time, bool) {
-	return m.DateInLocation(key, time.UTC)
+func (m M) Time(key string) (time.Time, bool) {
+	return m.TimeInLocation(key, time.UTC)
 }
 
-func (m M) DateInLocation(key string, loc *time.Location) (*time.Time, bool) {
+func (m M) TimeInLocation(key string, loc *time.Location) (time.Time, bool) {
 	s := strings.TrimSpace(m.String(key))
 	if s == "" {
-		return nil, false
+		return time.Time{}, false
 	}
-	d, err := conv.ToDateInLocation(s, loc)
+	d, err := conv.ToTimeInLocation(s, loc)
 	if err != nil {
-		return nil, false
+		return time.Time{}, false
 	}
 	return d, true
 }
