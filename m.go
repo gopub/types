@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"net/mail"
 	"net/url"
@@ -424,6 +425,18 @@ func (m M) AddMap(val M) {
 	for k, v := range val {
 		m.SetNX(k, v)
 	}
+}
+
+func (m M) AddStruct(s interface{}) error {
+	b, err := json.Marshal(s)
+	if err != nil {
+		return fmt.Errorf("marshal: %w", err)
+	}
+	err = json.Unmarshal(b, &m)
+	if err != nil {
+		return fmt.Errorf("unmarshal: %w", err)
+	}
+	return nil
 }
 
 func (m M) JSONString() string {
