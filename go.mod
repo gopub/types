@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/golang/geo v0.0.0-20200319012246-673a6f80352d
+	github.com/google/uuid v1.1.1
 	github.com/gopub/conv v0.3.4
 	github.com/gopub/log v1.2.0
 	github.com/nyaruka/phonenumbers v1.0.54
