@@ -36,6 +36,14 @@ func (s *Set) Slice() []interface{} {
 	return l
 }
 
+func (s *Set) Range(f func(i interface{}) bool) {
+	for k := range s.items {
+		if !f(k) {
+			break
+		}
+	}
+}
+
 type Int64Set struct {
 	items map[int64]Void
 }
@@ -96,6 +104,14 @@ func (s *Int64Set) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Slice())
 }
 
+func (s *Int64Set) Range(f func(i int64) bool) {
+	for k := range s.items {
+		if !f(k) {
+			break
+		}
+	}
+}
+
 type StringSet struct {
 	items map[string]Void
 }
@@ -154,4 +170,12 @@ func (s *StringSet) UnmarshalJSON(data []byte) error {
 
 func (s *StringSet) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.Slice())
+}
+
+func (s *StringSet) Range(f func(str string) bool) {
+	for k := range s.items {
+		if !f(k) {
+			break
+		}
+	}
 }
