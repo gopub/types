@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -171,7 +172,7 @@ type SnakeIDGenerator struct {
 	clock    NextNumber
 	sharding NextNumber
 
-	counter Counter
+	counter int64
 }
 
 func NewSnakeIDGenerator(shardBitsSize, seqBitsSize uint, clock, sharding NextNumber) *SnakeIDGenerator {
@@ -208,7 +209,8 @@ func (g *SnakeIDGenerator) NextID() ID {
 	if g.shardSize > 0 {
 		id |= (g.sharding.NextNumber() % (1 << g.shardSize)) << g.seqSize
 	}
-	id |= g.counter.Next() % (1 << g.seqSize)
+	n := atomic.AddInt64(&g.counter, 1)
+	id |= n % (1 << g.seqSize)
 	return ID(id)
 }
 

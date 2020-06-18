@@ -6,13 +6,13 @@ import (
 
 // FullName defines user's full name
 type FullName struct {
-	FirstName  string `json:"first_name"`
-	MiddleName string `json:"middle_name"`
-	LastName   string `json:"last_name"`
+	First  string `json:"first"`
+	Middle string `json:"middle"`
+	Last   string `json:"last"`
 }
 
 func (n *FullName) String() string {
-	return fmt.Sprintf("%s %s %s", n.FirstName, n.MiddleName, n.LastName)
+	return fmt.Sprintf("%s %s %s", n.First, n.Middle, n.Last)
 }
 
 type Gender int
