@@ -8,8 +8,10 @@ func init() {
 	RegisterAnyType(&File{})
 }
 
+// As types below will also be used in ObjC, field name `URL` will cause some issue, so `Url` is chosen instead.
+
 type Image struct {
-	URL       string `json:"url"`
+	Url       string `json:"url"`
 	Width     int    `json:"w,omitempty"`
 	Height    int    `json:"h,omitempty"`
 	Format    string `json:"fmt,omitempty"`
@@ -20,7 +22,7 @@ type Image struct {
 }
 
 type Video struct {
-	URL      string `json:"url"`
+	Url      string `json:"url"`
 	Format   string `json:"fmt,omitempty"`
 	Duration int    `json:"duration,omitempty"`
 	Size     int    `json:"size,omitempty"`
@@ -30,7 +32,7 @@ type Video struct {
 }
 
 type Audio struct {
-	URL      string `json:"url"`
+	Url      string `json:"url"`
 	Format   string `json:"fmt,omitempty"`
 	Duration int    `json:"duration,omitempty"`
 	Size     int    `json:"size,omitempty"`
@@ -39,7 +41,7 @@ type Audio struct {
 }
 
 type File struct {
-	URL    string `json:"url"`
+	Url    string `json:"url"`
 	Name   string `json:"name"`
 	Size   int    `json:"size,omitempty"`
 	Format string `json:"fmt,omitempty"`
@@ -50,5 +52,5 @@ type WebPage struct {
 	Title   string `json:"title,omitempty"`
 	Summary string `json:"summary,omitempty"`
 	Image   *Image `json:"image,omitempty"`
-	URL     string `json:"url"`
+	Url     string `json:"url"`
 }
