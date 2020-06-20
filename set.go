@@ -94,6 +94,7 @@ func (s *Int64Set) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &ids); err != nil {
 		return err
 	}
+	s.items = make(map[int64]Void)
 	for _, id := range ids {
 		s.Add(id)
 	}
@@ -162,6 +163,7 @@ func (s *StringSet) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &l); err != nil {
 		return err
 	}
+	s.items = make(map[string]Void)
 	for _, v := range l {
 		s.Add(v)
 	}
