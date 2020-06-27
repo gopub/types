@@ -63,9 +63,9 @@ func (p *Point) Distance(v *Point) int {
 }
 
 type Place struct {
-	Code     string `json:"code"`
-	Name     string `json:"name"`
-	Location *Point `json:"point"`
+	Code       string `json:"code"`
+	Name       string `json:"name"`
+	Coordinate *Point `json:"coordinate"`
 }
 
 type Country struct {
