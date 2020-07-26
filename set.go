@@ -44,6 +44,10 @@ func (s *Set) Range(f func(i interface{}) bool) {
 	}
 }
 
+func (s *Set) Len() int {
+	return len(s.items)
+}
+
 type Int64Set struct {
 	items map[int64]Void
 }
@@ -85,7 +89,7 @@ func (s *Int64Set) Map() map[int64]Void {
 	return s.items
 }
 
-func (s *Int64Set) Size() int {
+func (s *Int64Set) Len() int {
 	return len(s.items)
 }
 
@@ -154,7 +158,7 @@ func (s *StringSet) Map() map[string]Void {
 	return s.items
 }
 
-func (s *StringSet) Size() int {
+func (s *StringSet) Len() int {
 	return len(s.items)
 }
 
