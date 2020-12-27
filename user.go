@@ -12,6 +12,9 @@ type FullName struct {
 }
 
 func (n *FullName) String() string {
+	if n == nil {
+		return ""
+	}
 	return fmt.Sprintf("%s %s %s", n.First, n.Middle, n.Last)
 }
 

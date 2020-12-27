@@ -52,6 +52,9 @@ func NewPointFromString(s string) (*Point, error) {
 }
 
 func (p *Point) String() string {
+	if p == nil {
+		return ""
+	}
 	return fmt.Sprintf("%f,%f", p.X, p.Y)
 }
 

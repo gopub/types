@@ -12,6 +12,9 @@ type Money struct {
 }
 
 func (m *Money) String() string {
+	if m == nil {
+		return ""
+	}
 	return fmt.Sprintf("%s %s", m.Currency, m.Amount.String())
 }
 
