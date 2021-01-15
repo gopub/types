@@ -1,6 +1,8 @@
 package types
 
-import "fmt"
+import (
+	"github.com/gopub/conv"
+)
 
 type ByteUnit int64
 
@@ -14,17 +16,5 @@ const (
 )
 
 func (b ByteUnit) HumanReadable() string {
-	if b < KB {
-		return fmt.Sprintf("%d B", b)
-	} else if b < MB {
-		return fmt.Sprintf("%.2f KB", float64(b)/float64(KB))
-	} else if b < GB {
-		return fmt.Sprintf("%.2f MB", float64(b)/float64(MB))
-	} else if b < TB {
-		return fmt.Sprintf("%.2f GB", float64(b)/float64(GB))
-	} else if b < PB {
-		return fmt.Sprintf("%.2f TB", float64(b)/float64(TB))
-	} else {
-		return fmt.Sprintf("%.2f PB", float64(b)/float64(PB))
-	}
+	return conv.SizeToHumanReadable(int64(b))
 }
