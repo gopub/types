@@ -67,12 +67,14 @@ type Education struct {
 	Major   string          `json:"major,omitempty"`
 	StartAt int64           `json:"started_at,omitempty"`
 	EndAt   int64           `json:"end_at,omitempty"`
+	Place   *Place          `json:"place,omitempty"`
 }
 
 type Work struct {
-	Company string `json:"company"`
-	Title   string `json:"title"`
-	Salary  int    `json:"salary"`
-	StartAt int64  `json:"start_at"`
-	EndAt   int64  `json:"end_at"`
+	Company string `json:"company,omitempty"`
+	Title   string `json:"title,omitempty"`
+	Salary  int    `json:"salary,omitempty"`
+	StartAt int64  `json:"start_at,omitempty"`
+	EndAt   int64  `json:"end_at,omitempty"`
+	Place   *Place `json:"place,omitempty"`
 }
