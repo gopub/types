@@ -34,6 +34,15 @@ func (g Gender) String() string {
 	}
 }
 
+func (g Gender) IsValid() bool {
+	switch g {
+	case Male, Female:
+		return true
+	default:
+		return false
+	}
+}
+
 const (
 	DriverLicense = "driver_license"
 	NationalID    = "national_id"
@@ -47,6 +56,7 @@ type PhotoID struct {
 	Number    string `json:"number,omitempty"`
 	IssuedAt  int64  `json:"issued_at,omitempty"`
 	ExpiresAt int64  `json:"expires_at,omitempty"`
+	Verified  bool   `json:"verified,omitempty"`
 }
 
 type EducationDegree int
@@ -62,19 +72,23 @@ const (
 )
 
 type Education struct {
-	Degree  EducationDegree `json:"degree,omitempty"`
-	School  string          `json:"school,omitempty"`
-	Major   string          `json:"major,omitempty"`
-	StartAt int64           `json:"started_at,omitempty"`
-	EndAt   int64           `json:"end_at,omitempty"`
-	Place   *Place          `json:"place,omitempty"`
+	Degree   EducationDegree `json:"degree,omitempty"`
+	School   string          `json:"school,omitempty"`
+	Major    string          `json:"major,omitempty"`
+	StartAt  int64           `json:"started_at,omitempty"`
+	EndAt    int64           `json:"end_at,omitempty"`
+	Place    *Place          `json:"place,omitempty"`
+	Verified bool            `json:"verified,omitempty"`
+	Proofs   []string        `json:"documents,omitempty"`
 }
 
 type Work struct {
-	Company string `json:"company,omitempty"`
-	Title   string `json:"title,omitempty"`
-	Salary  int    `json:"salary,omitempty"`
-	StartAt int64  `json:"start_at,omitempty"`
-	EndAt   int64  `json:"end_at,omitempty"`
-	Place   *Place `json:"place,omitempty"`
+	Company  string   `json:"company,omitempty"`
+	Title    string   `json:"title,omitempty"`
+	Salary   int      `json:"salary,omitempty"`
+	StartAt  int64    `json:"start_at,omitempty"`
+	EndAt    int64    `json:"end_at,omitempty"`
+	Place    *Place   `json:"place,omitempty"`
+	Verified bool     `json:"verified,omitempty"`
+	Proofs   []string `json:"documents,omitempty"`
 }
