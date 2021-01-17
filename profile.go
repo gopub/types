@@ -62,9 +62,17 @@ const (
 )
 
 type Education struct {
-	Degree    EducationDegree `json:"degree,omitempty"`
-	School    string          `json:"school,omitempty"`
-	Major     string          `json:"major,omitempty"`
-	StartedAt int64           `json:"started_at,omitempty"`
-	EndAt     int64           `json:"end_at,omitempty"`
+	Degree  EducationDegree `json:"degree,omitempty"`
+	School  string          `json:"school,omitempty"`
+	Major   string          `json:"major,omitempty"`
+	StartAt int64           `json:"started_at,omitempty"`
+	EndAt   int64           `json:"end_at,omitempty"`
+}
+
+type Work struct {
+	Company string `json:"company"`
+	Title   string `json:"title"`
+	Salary  int    `json:"salary"`
+	StartAt int64  `json:"start_at"`
+	EndAt   int64  `json:"end_at"`
 }
