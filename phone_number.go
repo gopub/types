@@ -80,6 +80,14 @@ func NewPhoneNumberV2(s string, code int) (*PhoneNumber, error) {
 	return nil, err
 }
 
+func MustPhoneNumber(s string) *PhoneNumber {
+	pn, err := NewPhoneNumber(s)
+	if err != nil {
+		panic(err)
+	}
+	return pn
+}
+
 func trimPhoneNumberString(s string) string {
 	s = strings.Replace(s, "-", "", -1)
 	s = strings.Replace(s, " ", "", -1)
