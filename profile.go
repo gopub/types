@@ -92,3 +92,23 @@ type Work struct {
 	Verified bool     `json:"verified,omitempty"`
 	Proofs   []string `json:"documents,omitempty"`
 }
+
+type Username string
+type EmailAddress string
+type Nickname string
+
+type Account interface {
+	AccountType() string
+}
+
+func (u Username) AccountType() string {
+	return "username"
+}
+
+func (e EmailAddress) AccountType() string {
+	return "email_address"
+}
+
+func (n *PhoneNumber) AccountType() string {
+	return "phone_number"
+}
