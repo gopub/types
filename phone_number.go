@@ -48,6 +48,10 @@ func (n *PhoneNumber) MaskString() string {
 	return fmt.Sprintf("+%d%s-%s", n.Code, nn, n.Extension)
 }
 
+func (n *PhoneNumber) AccountType() string {
+	return "phone_number"
+}
+
 func NewPhoneNumber(s string) (*PhoneNumber, error) {
 	s = trimPhoneNumberString(s)
 	pn, err := phonenumbers.Parse(s, "")

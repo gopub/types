@@ -1,9 +1,10 @@
 package types_test
 
 import (
+	"testing"
+
 	"github.com/gopub/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestM_AddStruct(t *testing.T) {

@@ -1,6 +1,16 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+
+	"github.com/gopub/conv"
+)
+
+var (
+	nickRegexp     = regexp.MustCompile("^[^ \n\r\t\f][^\n\r\t\f]{0,28}[^ \n\r\t\f]$")
+	usernameRegexp = regexp.MustCompile("^[a-zA-Z][\\w\\.]{1,19}$")
+)
 
 // FullName defines user's full name
 type FullName struct {
@@ -93,22 +103,32 @@ type Work struct {
 	Proofs   []string `json:"documents,omitempty"`
 }
 
-type Username string
-type EmailAddress string
-type Nickname string
-
 type Account interface {
 	AccountType() string
 }
+
+type Username string
 
 func (u Username) AccountType() string {
 	return "username"
 }
 
+func (u Username) IsValid() bool {
+	return usernameRegexp.MatchString(string(u))
+}
+
+type EmailAddress string
+
 func (e EmailAddress) AccountType() string {
 	return "email_address"
 }
 
-func (n *PhoneNumber) AccountType() string {
-	return "phone_number"
+func (e EmailAddress) IsValid() bool {
+	return conv.IsEmailAddress(string(e))
+}
+
+type Nickname string
+
+func (n Nickname) IsValid() bool {
+	return nickRegexp.MatchString(string(n))
 }
