@@ -7,7 +7,7 @@ import (
 
 func TestID(t *testing.T) {
 	for i := 0; i < 256; i++ {
-		id := NewID()
+		id := NextID()
 		t.Logf("%d %0X %s", id, id, id.Short())
 		//time.Sleep(time.Millisecond * 1)
 	}
@@ -33,7 +33,7 @@ func TestID(t *testing.T) {
 
 func TestID_Pretty(t *testing.T) {
 	for i := 0; i < 256; i++ {
-		id := NewID()
+		id := NextID()
 		t.Logf("%d %0X %s", id, id, id.Pretty())
 		//time.Sleep(time.Millisecond * 1)
 	}

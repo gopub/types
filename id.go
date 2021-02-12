@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -241,10 +242,14 @@ var nextMilliseconds NextNumberFunc = func() int64 {
 	return time.Since(epoch).Nanoseconds() / 1e6
 }
 
-func NewID() ID {
+func NextID() ID {
 	return idGenerator.NextID()
 }
 
 func SetIDGenerator(g IDGenerator) {
 	idGenerator = g
+}
+
+func RandomID() ID {
+	return ID(rand.Int63())
 }
