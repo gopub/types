@@ -168,7 +168,7 @@ func RandomEmailAddress() EmailAddress {
 }
 
 func RandomPhoneNumber() *PhoneNumber {
-	return MustPhoneNumber(fmt.Sprintf("+861381234%04d", RandomID()%1e5))
+	return MustPhoneNumber(fmt.Sprintf("+861381234%04d", RandomID()%1e4))
 }
 
 func RandomNickname() Nickname {
