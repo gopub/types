@@ -162,14 +162,15 @@ func ParseAccount(s string) (Account, error) {
 	return nil, errors.New("invalid account")
 }
 
-func RandomEmailAddress() string {
-	return RandomID().Short() + "@" + RandomID().Short() + ".com"
+func RandomEmailAddress() EmailAddress {
+	s := RandomID().Short() + "@" + RandomID().Short() + ".com"
+	return EmailAddress(s)
 }
 
 func RandomPhoneNumber() *PhoneNumber {
 	return MustPhoneNumber(fmt.Sprintf("+861381234%04d", RandomID()%1e5))
 }
 
-func RandomNickname() string {
-	return RandomID().Short()
+func RandomNickname() Nickname {
+	return Nickname(RandomID().Short())
 }
