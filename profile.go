@@ -119,11 +119,24 @@ func (u Username) AccountType() string {
 func (u Username) IsValid() bool {
 	return usernameRegexp.MatchString(string(u))
 }
+func (u Username) Normalize() Username {
+	s := string(u)
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	return Username(s)
+}
 
 type EmailAddress string
 
 func (e EmailAddress) AccountType() string {
 	return "email_address"
+}
+
+func (e EmailAddress) Normalize() EmailAddress {
+	s := string(e)
+	s = strings.TrimSpace(s)
+	s = strings.ToLower(s)
+	return EmailAddress(s)
 }
 
 func (e EmailAddress) IsValid() bool {
@@ -134,6 +147,12 @@ type Nickname string
 
 func (n Nickname) IsValid() bool {
 	return nickRegexp.MatchString(string(n))
+}
+
+func (n Nickname) Normalize() Nickname {
+	s := string(n)
+	s = strings.TrimSpace(s)
+	return Nickname(s)
 }
 
 func ParseAccount(s string) (Account, error) {
