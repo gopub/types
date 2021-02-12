@@ -96,6 +96,14 @@ func (i ID) Salt(v string) string {
 	return hex.EncodeToString(sum[:])
 }
 
+func (i ID) AccountType() string {
+	return "id"
+}
+
+func (i ID) IsValid() bool {
+	return i > 0
+}
+
 func parseShortID(s string) (ID, error) {
 	if len(s) == 0 {
 		return 0, errors.New("parse error")
