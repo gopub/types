@@ -1,8 +1,11 @@
 package types
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/gopub/conv"
 )
@@ -131,4 +134,30 @@ type Nickname string
 
 func (n Nickname) IsValid() bool {
 	return nickRegexp.MatchString(string(n))
+}
+
+func ParseAccount(s string) (Account, error) {
+	s = strings.ToLower(s)
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return nil, errors.New("invalid account")
+	}
+
+	if pn, err := NewPhoneNumber(s); err == nil {
+		return pn, nil
+	}
+
+	if conv.IsEmailAddress(s) {
+		return EmailAddress(s), nil
+	}
+
+	if id, err := strconv.ParseInt(s, 10, 64); err == nil {
+		return ID(id), nil
+	}
+
+	u := Username(s)
+	if u.IsValid() {
+		return u, nil
+	}
+	return nil, errors.New("invalid account")
 }
