@@ -97,10 +97,6 @@ func (i ID) Salt(v string) string {
 	return hex.EncodeToString(sum[:])
 }
 
-func (i ID) AccountType() string {
-	return "id"
-}
-
 func (i ID) IsValid() bool {
 	return i > 0
 }

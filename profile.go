@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/gopub/conv"
@@ -168,10 +167,6 @@ func ParseAccount(s string) (Account, error) {
 
 	if conv.IsEmailAddress(s) {
 		return EmailAddress(s), nil
-	}
-
-	if id, err := strconv.ParseInt(s, 10, 64); err == nil {
-		return ID(id), nil
 	}
 
 	u := Username(s)
