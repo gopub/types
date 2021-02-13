@@ -107,6 +107,7 @@ type Work struct {
 
 type Account interface {
 	AccountType() string
+	String() string
 }
 
 type Username string
@@ -118,11 +119,16 @@ func (u Username) AccountType() string {
 func (u Username) IsValid() bool {
 	return usernameRegexp.MatchString(string(u))
 }
+
 func (u Username) Normalize() Username {
 	s := string(u)
 	s = strings.TrimSpace(s)
 	s = strings.ToLower(s)
 	return Username(s)
+}
+
+func (u Username) String() string {
+	return (string)(u)
 }
 
 type EmailAddress string
@@ -140,6 +146,10 @@ func (e EmailAddress) Normalize() EmailAddress {
 
 func (e EmailAddress) IsValid() bool {
 	return conv.IsEmailAddress(string(e))
+}
+
+func (e EmailAddress) String() string {
+	return (string)(e)
 }
 
 type Nickname string
