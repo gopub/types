@@ -185,3 +185,72 @@ func (s *StringSet) Range(f func(str string) bool) {
 		}
 	}
 }
+
+type IDSet struct {
+	items map[ID]Void
+}
+
+var (
+	_ json.Unmarshaler = (*IDSet)(nil)
+	_ json.Marshaler   = (*IDSet)(nil)
+)
+
+func NewIDSet(capacity int) *IDSet {
+	s := &IDSet{}
+	s.items = make(map[ID]Void, capacity)
+	return s
+}
+
+func (s *IDSet) Add(item ID) {
+	s.items[item] = Void{}
+}
+
+func (s *IDSet) Contains(item ID) bool {
+	_, found := s.items[item]
+	return found
+}
+
+func (s *IDSet) Remove(item ID) {
+	delete(s.items, item)
+}
+
+func (s *IDSet) Slice() []ID {
+	l := make([]ID, 0, len(s.items))
+	for k := range s.items {
+		l = append(l, k)
+	}
+
+	return l
+}
+
+func (s *IDSet) Map() map[ID]Void {
+	return s.items
+}
+
+func (s *IDSet) Len() int {
+	return len(s.items)
+}
+
+func (s *IDSet) UnmarshalJSON(data []byte) error {
+	var ids []ID
+	if err := json.Unmarshal(data, &ids); err != nil {
+		return err
+	}
+	s.items = make(map[ID]Void)
+	for _, id := range ids {
+		s.Add(id)
+	}
+	return nil
+}
+
+func (s *IDSet) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.Slice())
+}
+
+func (s *IDSet) Range(f func(i ID) bool) {
+	for k := range s.items {
+		if !f(k) {
+			break
+		}
+	}
+}
