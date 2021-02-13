@@ -462,6 +462,42 @@ func (m M) Keep(keys ...string) {
 		}
 	}
 }
+func (m M) ContainsID(key string) bool {
+	_, err := conv.ToInt64(m.Get(key))
+	return err == nil
+}
+
+func (m M) ID(key string) ID {
+	v, _ := conv.ToInt64(m.Get(key))
+	return ID(v)
+}
+
+func (m M) DefaultID(key string, defaultVal ID) ID {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
+		return ID(v)
+	}
+	return defaultVal
+}
+
+func (m M) MustID(key string) ID {
+	if v, err := conv.ToInt64(m.Get(key)); err == nil {
+		return ID(v)
+	}
+	panic("No ID value for key:" + key)
+}
+
+func (m M) IDSlice(key string) []ID {
+	values := m.Slice(key)
+	var result []ID
+	for _, v := range values {
+		i, e := conv.ToInt64(v)
+		if e == nil {
+			result = append(result, ID(i))
+		}
+	}
+
+	return result
+}
 
 func indexOfStr(l []string, s string) int {
 	for i, str := range l {
