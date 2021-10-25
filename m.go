@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/gopub/conv"
-	"github.com/gopub/log"
+	"github.com/gopub/log/v2"
 	"github.com/shopspring/decimal"
 )
 

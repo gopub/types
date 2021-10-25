@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gopub/log"
+	"github.com/gopub/log/v2"
 	"github.com/nyaruka/phonenumbers"
 )
 
